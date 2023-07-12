@@ -1,0 +1,28 @@
+{
+	"homepage": "/",
+	"name": "express-mesto",
+	"author": "",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node app.js",
+		"build": "react-scripts build",
+		"lint": "npx eslint .",
+		"dev": "nodemon app.js"
+	},
+	"keywords": [],
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.20.2",
+		"express": "^4.18.2",
+		"mogoose": "^0.0.1-security",
+		"mongoose": "^7.3.2"
+	},
+	"devDependencies": {
+		"eslint": "^8.44.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-plugin-import": "^2.27.5",
+		"nodemon": "^2.0.22"
+	}
+}
