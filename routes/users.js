@@ -1,4 +1,4 @@
-const router = require('express').Router();
+const router = require("express").Router();
 
 const {
   getUserInfo,
@@ -6,18 +6,17 @@ const {
   updateUser,
   updateAvatar,
   createUserInfo,
-
-} = require('../controllers/users');
+} = require("../controllers/users");
 
 // Пользователи
-router.get('/', getUserInfo);
+router.get("/", getUserInfo);
 // Пользователь по ID
-router.get('/:id', getUserInfoId);
+router.get("/:id", getUserInfoId);
 // Создание пользователя
-router.post('/', createUserInfo);
+router.post("/", createUserInfo);
 // Обновление профиля
-router.patch('/me', updateUser);
+router.patch("/me", updateUser);
 // Обновляет аватар
-router.patch('/me/avatar', updateAvatar);
+router.patch("/me/avatar", updateAvatar);
 
 module.exports = router;
