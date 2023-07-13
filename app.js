@@ -1,16 +1,19 @@
 const express = require('express');
+// eslint-disable-next-line no-unused-vars
 const mongoose = require('mongoose');
-// const NotFoundError = require('./errors/NotFoundError');
-const CAST_ERROR_CODE = 404;
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { PORT = 3000 } = process.env;
+const helmet = require('helmet');
+
+const CAST_ERROR_CODE = 404;
 
 const app = express();
 app.use(express.json());
+app.use(helmet());
 
 app.use('/', (req, res, next) => {
   req.user = {
-    _id: '64a95bc690e3e95e1be3c681',
+    _id: '64b040658a0d70ec5536769a',
   };
   next();
 });
@@ -22,8 +25,7 @@ app.use('/cards', require('./routes/cards'));
 app.use('*', (req, res) => {
   res.status(CAST_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
 });
-
-// подключаемся к серверу mongo
+// eslint-disable-next-line no-unused-vars
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
 });

@@ -1,7 +1,9 @@
-const User = require("../models/user");
+/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable no-shadow */
+// const validationError = require('mongoose').Error;
+const User = require('../models/user');
 
-const InternalServerError = require("../errors/InternalServerError");
-const user = require("../models/user");
+const INTERNAL_SERVER_ERROR = 500;
 
 const BAD_REQUEST_ERROR = 400;
 const CAST_ERROR_CODE = 404;
@@ -9,64 +11,61 @@ const CAST_ERROR_CODE = 404;
 const getUserInfo = (req, res) => {
   User.find({})
     .then((data) => res.send(data))
-    .catch(() =>
-      res.status(InternalServerError).send({ message: "Произошла ошибка" })
-    );
+    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
 
 const getUserInfoId = (req, res) => {
   User.findById(req.params.id)
-    .then(((user) => {
-			if (user) {
-				res.send({ data: user });
-			} else {
-				res.status(CAST_ERROR_CODE).send({ message: 'Пользователь по указанному id не найден'})
-			}
-		}))
-		.catch((err) => {
-			if (err instanceof castError) {
-				res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректный id' });
-			} else {
-				res.status(InternalServerError).send({ message: 'Произошла ошибка' });
-			}
-		});
+    .orFail(new Error('NotValidId'))
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      // eslint-disable-next-line no-undef
+      if (err.message === 'NotValidId') {
+        res.status(CAST_ERROR_CODE).send({ message: 'Некорректный id' });
+      } else {
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 const createUserInfo = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res
           .status(BAD_REQUEST_ERROR)
-          .send({ message: "Некорректные данные при создании пользователя" });
+          .send({ message: 'Некорректные данные при создании пользователя' });
       } else {
         res
-          .status(InternalServerError)
-          .send({ message: "Произошла ошибка" });
+          .status(INTERNAL_SERVER_ERROR)
+          .send({ message: 'Произошла ошибка' });
       }
     });
 };
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
         return res
           .status(CAST_ERROR_CODE)
-          .send({ message: "Запрашиваемый пользователь не найден" });
+          .send({ message: 'Запрашиваемый пользователь не найден' });
       }
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res
           .status(BAD_REQUEST_ERROR)
-          .send({ message: "Некорректные данные при обновлении профиля" });
+          .send({ message: 'Некорректные данные при обновлении профиля' });
       } else {
-        res.status(InternalServerError).send({ message: "Произошла ошибка" });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -74,23 +73,23 @@ const updateUser = (req, res) => {
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
         return res
           .status(CAST_ERROR_CODE)
-          .send({ message: "Запрашиваемый пользователь не найден" });
+          .send({ message: 'Запрашиваемый пользователь не найден' });
       }
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res
           .status(BAD_REQUEST_ERROR)
-          .send({ message: "Некорректные данные при обновлении профиля" });
+          .send({ message: 'Некорректные данные при обновлении профиля' });
       } else {
-        res.status(InternalServerError).send({ message: "Произошла ошибка" });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
