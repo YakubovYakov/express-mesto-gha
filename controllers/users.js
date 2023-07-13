@@ -23,7 +23,7 @@ const getUserInfoId = (req, res) => {
     .catch((err) => {
       // eslint-disable-next-line no-undef
       if (err.message === 'NotValidId') {
-        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректный id' });
+        res.status(CAST_ERROR_CODE).send({ message: 'Некорректный id' });
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }

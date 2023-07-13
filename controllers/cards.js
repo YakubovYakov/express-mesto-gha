@@ -62,7 +62,7 @@ const addLike = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'castError') {
+      if (err.name === 'CastError') {
         res
           .status(BAD_REQUEST_ERROR)
           .send({ message: 'Неправильный id карточки' });
@@ -86,7 +86,7 @@ const removeLike = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'castError') {
+      if (err.name === 'CastError') {
         res
           .status(BAD_REQUEST_ERROR)
           .send({ message: 'Неправильный id карточки' });
