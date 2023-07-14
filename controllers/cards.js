@@ -45,7 +45,11 @@ const deleteCard = (req, res) => {
           .send({ message: 'Карточка с указанным id не найдена' });
       }
     })
-    .catch((err) => res.status(CAST_ERROR_CODE).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST_ERROR).send({ message: 'Неправильный id карточки' });
+      }
+    });
 };
 
 const addLike = (req, res) => {

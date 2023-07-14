@@ -16,14 +16,14 @@ const getUserInfo = (req, res) => {
 
 const getUserInfoId = (req, res) => {
   User.findById(req.params.id)
-    .orFail(new Error('NotValidId'))
+    .orFail(new Error('CastError'))
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       // eslint-disable-next-line no-undef
-      if (err.message === 'NotValidId') {
-        res.status(CAST_ERROR_CODE).send({ message: 'Некорректный id' });
+      if (err.message === 'CastError') {
+        res.status(BAD_REQUEST_ERROR).send({ message: 'Некорректный id' });
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
