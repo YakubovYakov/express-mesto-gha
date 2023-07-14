@@ -48,6 +48,8 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST_ERROR).send({ message: 'Неправильный id карточки' });
+      } else {
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
