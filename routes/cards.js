@@ -1,4 +1,6 @@
 const cardsRouter = require('express').Router();
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { celebrate, Joi } = require('celebrate');
 
 const {
   getCards,
@@ -7,11 +9,46 @@ const {
   addLike,
   removeLike,
 } = require('../controllers/cards');
+const regex = require('../utils/url-regexp');
 
 cardsRouter.get('/', getCards);
-cardsRouter.post('/', postCard);
-cardsRouter.delete('/:cardId', deleteCard);
-cardsRouter.put('/:cardId/likes', addLike);
-cardsRouter.delete('/:cardId/likes', removeLike);
+cardsRouter.post(
+  '/',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string().required().regex(regex),
+    }),
+  }),
+  postCard,
+);
+
+cardsRouter.delete(
+  '/:cardId',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().required().hex().length(24),
+    }),
+  }),
+  deleteCard,
+);
+cardsRouter.put(
+  '/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().required().length(24).hex(),
+    }),
+  }),
+  addLike,
+);
+cardsRouter.delete(
+  '/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().required().length(24).hex(),
+    }),
+  }),
+  removeLike,
+);
 
 module.exports = cardsRouter;
