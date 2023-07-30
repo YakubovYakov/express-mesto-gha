@@ -5,7 +5,6 @@ const Unauthorized = require('../errors/Unauthorized');
 const { JWT_SECRET = 'secret-key' } = process.env;
 
 const auth = (req, res, next) => {
-  console.log(req.cookies, '123');
   const token = req.cookies.jwt;
   if (!token) {
     throw new Unauthorized('Ошибка авторизации');

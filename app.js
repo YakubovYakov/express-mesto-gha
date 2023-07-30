@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 // const cookies = require('cookies');
 // eslint-disable-next-line import/no-extraneous-dependencies
-const { PORT = 3000 } = process.env;
 const helmet = require('helmet');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { celebrate, Joi } = require('celebrate');
@@ -14,6 +13,7 @@ const NotFoundError = require('./errors/NotFoundError');
 const rootRouter = require('./routes/index');
 const { login, createUserInfo } = require('./controllers/users');
 
+const { PORT = 3000 } = process.env;
 const app = express();
 // app.use(cookies());
 app.use(cookieParser());
