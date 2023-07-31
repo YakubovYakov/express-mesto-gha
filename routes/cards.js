@@ -1,5 +1,4 @@
 const cardsRouter = require('express').Router();
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { celebrate, Joi } = require('celebrate');
 
 const {
@@ -12,6 +11,7 @@ const {
 const regex = require('../utils/url-regexp');
 
 cardsRouter.get('/', getCards);
+
 cardsRouter.post(
   '/',
   celebrate({

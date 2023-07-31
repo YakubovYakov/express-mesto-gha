@@ -19,4 +19,4 @@ function checkToken(token) {
   }
 }
 
-module.exports = { generateToken, checkToken };
+module.exports = { generateToken, checkToken, SECRET_KEY };
