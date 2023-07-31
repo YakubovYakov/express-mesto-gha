@@ -39,7 +39,7 @@ const deleteCard = (req, res, next) => {
       if (card === null) {
         return next(new NotFoundError('Карточка с указанным id не найдена'));
       }
-      if (!(card.owner.toString() === req.user._id)) {
+      if (!(card.owner.toString() === req.user.userId)) {
         return next(new ForbiddenError('Нет прав для удаления данной карточки'));
       }
       Card.deleteOne(cardId)
@@ -60,7 +60,7 @@ const deleteCard = (req, res, next) => {
 const addLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
+    { $addToSet: { likes: req.user.userId } },
     { new: true },
   )
     .then((card) => {
@@ -82,7 +82,7 @@ const addLike = (req, res, next) => {
 const removeLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $pull: { likes: req.user._id } },
+    { $pull: { likes: req.user.userId } },
     { new: true },
   )
     .then((card) => {
