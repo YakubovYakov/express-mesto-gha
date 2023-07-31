@@ -14,6 +14,8 @@ const routeCards = require('./routes/cards');
 
 const NotFoundError = require('./errors/NotFoundError');
 
+const INTERNAL_SERVER_ERROR = 500;
+
 const URL = 'mongodb://127.0.0.1:27017/mestodb';
 const { PORT = 3000 } = process.env;
 
@@ -38,6 +40,14 @@ app.use('/cards', routeCards);
 
 app.use((req, res, next) => next(new NotFoundError('Страница не найдена')));
 app.use(errors());
+app.use((err, req, res, next) => {
+  if (err.statusCode) {
+    res.status(err.statusCode).send({ message: err.message });
+  } else {
+    res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+  }
+  next();
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on ${PORT}`);

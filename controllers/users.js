@@ -26,7 +26,7 @@ const createUserInfo = (req, res, next) => {
     .then((user) => {
       const { _id } = user;
 
-      return res.status(200).send({
+      return res.status(201).send({
         email,
         name,
         about,
@@ -53,7 +53,7 @@ function login(req, res, next) {
           expiresIn: '7d',
         });
 
-        return res.send({ _id: token });
+        return res.send({ token, message: 'Авторизация прошла успешно' });
       }
 
       throw new Unauthorized('Ошибка авторизации');
@@ -110,10 +110,21 @@ const updateAvatar = (req, res, next) => {
 };
 
 const getUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail(() => { throw new NotFoundError('Пользователь не найден'); })
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+  const { userId } = req.user;
+
+  User.findById(userId)
+    .then((user) => {
+      if (user) return res.send({ user });
+
+      throw new NotFoundError('Пользователь с указанным id не найден');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Передан некорректный id'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {

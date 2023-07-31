@@ -7,20 +7,21 @@ const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
-      res.send(cards);
+      res.send({ data: cards });
     })
-    .catch((err) => res.status(InternalServerError).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
 
 const postCard = (req, res, next) => {
   const { name, link } = req.body;
-  const owner = req.user._id;
-  Card.create({ name, link, owner })
+  const { userId } = req.user;
+
+  Card.create({ name, link, owner: userId })
     .then((card) => res.status(201).send({ data: card }))
-    // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании карточки'));
@@ -41,7 +42,7 @@ const deleteCard = (req, res, next) => {
       if (!(card.owner.toString() === req.user._id)) {
         return next(new ForbiddenError('Нет прав для удаления данной карточки'));
       }
-      Card.findByIdAndRemove(cardId)
+      Card.deleteOne(cardId)
         // eslint-disable-next-line consistent-return
         .then((data) => {
           if (data) {
