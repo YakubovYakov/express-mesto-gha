@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const routeSignup = require('./routes/signup');
 const routeSignin = require('./routes/signin');
 
@@ -35,8 +37,12 @@ app.use('/', routeSignin);
 
 app.use(auth);
 
+app.use(requestLogger);
+
 app.use('/users', routeUsers);
 app.use('/cards', routeCards);
+
+app.use(errorLogger);
 
 app.use((req, res, next) => next(new NotFoundError('Страница не найдена')));
 app.use(errors());
